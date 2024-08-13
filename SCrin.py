@@ -1,29 +1,29 @@
 import pyautogui
 import cv2
 import numpy as np
-# from PIL import Image
+from PIL import Image
 import time
 
-time.sleep(10)
+def capture_and_process(interval, duration):
+      end_time = time.time() + duration
+      count = 1
 
-screenshot = pyautogui.screenshot()
-screenshot.save("screenshot1.png")
+      while time.time() < end_time:
+           # Захват изображения
+         screenshot = pyautogui.screenshot()
+           
+           # Обработка (например, преобразование в черно-белое)
+         screenshot = screenshot.convert("L")
+           
+           # Сохранение изображения
+         screenshot.save(f"screenshot_{count}.png")
+         count += 1
+           
+           # Ожидание
+         time.sleep(interval)
 
-# Загрузка изображения объекта
-template = cv2.imread('object.png')
-result = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)
-
-# Установка порога
-threshold = 0.8
-yloc, xloc = np.where(result >= threshold)
-
-# Отрисовка прямоугольников
-for (x, y) in zip(xloc, yloc):
-    cv2.rectangle(screenshot, (x, y), (x + template.shape[1], y + template.shape[0]), (0, 255, 0), 2)
-
-cv2.imshow('Detected Objects', screenshot)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+   # Запуск функции: захват каждый 5 секунд в течение 1 минуты
+capture_and_process(interval=5, duration=60)
 
 
 
